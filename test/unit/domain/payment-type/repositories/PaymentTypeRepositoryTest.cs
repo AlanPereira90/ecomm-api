@@ -42,12 +42,13 @@ public class PaymentTypeRepositoryTest
   {
     PaymentType paymentType = PaymentTypeEntityBuilder.build();
     string errorMessage = _faker.Lorem.Sentence();
+    string expectedError = $"Error creating payment type: {errorMessage}";
 
     _mockDatabase.Setup(x => x.Save(paymentType)).Throws(new Exception(errorMessage));
     PaymentTypeRepository instance = new PaymentTypeRepository(_mockDatabase.Object);
 
-    var error = await Assert.ThrowsAsync<Exception>(() => instance.Create(paymentType));
-    Assert.Equal(errorMessage, error.Message);
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Create(paymentType));
+    Assert.Equal(expectedError, error.Message);
     _mockDatabase.Verify(x => x.Save(paymentType), Times.Once);
   }
 }
