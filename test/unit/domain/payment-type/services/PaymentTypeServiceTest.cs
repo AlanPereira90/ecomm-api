@@ -22,7 +22,7 @@ public class PaymentTypeServiceTest
   [Trait("Method", "Create")]
   public async void CreateSuccessfull()
   {
-    PaymentType paymentType = PaymentTypeEntityBuilder.build();
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.build();
 
     _mockRepository.Setup(x => x.Create(paymentType)).ReturnsAsync(paymentType);
     IPaymentTypeService instance = new PaymentTypeService(_mockRepository.Object);

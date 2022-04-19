@@ -4,5 +4,5 @@ namespace src.domain.payment_type.interfaces;
 
 public interface IPaymentTypeService
 {
-  Task<Guid> Create(PaymentType paymentType);
+  Task<Guid> Create(PaymentTypeEntity paymentType);
 }

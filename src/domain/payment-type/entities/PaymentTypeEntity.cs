@@ -1,8 +1,8 @@
 namespace src.domain.payment_type.entities;
 
-public class PaymentType
+public class PaymentTypeEntity
 {
-  public PaymentType(string code, string name, string description)
+  public PaymentTypeEntity(string code, string name, string description)
   {
     this.Id = Guid.NewGuid();
     this.Code = code;

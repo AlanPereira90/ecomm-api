@@ -12,7 +12,7 @@ public class PaymentTypeService : IPaymentTypeService
     _paymentTypeRepository = paymentTypeRepository;
   }
 
-  public async Task<Guid> Create(PaymentType paymentType)
+  public async Task<Guid> Create(PaymentTypeEntity paymentType)
   {
     var result = await _paymentTypeRepository.Create(paymentType);
     return result.Id;

@@ -3,21 +3,20 @@ using System.Net;
 
 using src.domain.payment_type.interfaces;
 using src.domain.payment_type.entities;
-using src.domain.common.interfaces;
 
 namespace src.domain.payment_type.repositories;
 
 public class PaymentTypeRepository : IPaymentTypeRepository
 {
-  private readonly IDatabase<PaymentType> _database;
+  private readonly IPaymentTypeDao _dao;
 
-  public PaymentTypeRepository(IDatabase<PaymentType> database)
+  public PaymentTypeRepository(IPaymentTypeDao dao)
   {
-    this._database = database;
+    this._dao = dao;
   }
 
-  public Task<PaymentType> Create(PaymentType paymentType)
+  public Task<PaymentTypeEntity> Create(PaymentTypeEntity paymentType)
   {
-    return this._database.Save(paymentType);
+    return this._dao.InsertOneAsync(paymentType);
   }
 }
