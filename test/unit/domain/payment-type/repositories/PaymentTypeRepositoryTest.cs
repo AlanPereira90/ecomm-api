@@ -1,10 +1,11 @@
 using Xunit;
 using Moq;
-using System;
 using Bogus;
+using KellermanSoftware.CompareNetObjects;
 
 using src.domain.common.interfaces;
 using src.domain.payment_type.entities;
+using src.domain.payment_type.interfaces;
 using src.domain.payment_type.repositories;
 
 using test.builders.payment_type;
@@ -15,6 +16,7 @@ public class PaymentTypeRepositoryTest
 {
   private Mock<IDatabase<PaymentType>> _mockDatabase;
   private Faker _faker = new Faker();
+  private CompareLogic _comparer = new CompareLogic();
 
   public PaymentTypeRepositoryTest()
   {
@@ -28,27 +30,11 @@ public class PaymentTypeRepositoryTest
     PaymentType paymentType = PaymentTypeEntityBuilder.build();
 
     _mockDatabase.Setup(x => x.Save(paymentType)).ReturnsAsync(paymentType);
-    PaymentTypeRepository instance = new PaymentTypeRepository(_mockDatabase.Object);
+    IPaymentTypeRepository instance = new PaymentTypeRepository(_mockDatabase.Object);
 
     var result = await instance.Create(paymentType);
 
-    Assert.Equal(paymentType.Id, result);
-    _mockDatabase.Verify(x => x.Save(paymentType), Times.Once);
-  }
-
-  [Fact(DisplayName = "should fail when database fails")]
-  [Trait("Method", "Create")]
-  public async void CreateFail()
-  {
-    PaymentType paymentType = PaymentTypeEntityBuilder.build();
-    string errorMessage = _faker.Lorem.Sentence();
-    string expectedError = $"Error creating payment type: {errorMessage}";
-
-    _mockDatabase.Setup(x => x.Save(paymentType)).Throws(new Exception(errorMessage));
-    PaymentTypeRepository instance = new PaymentTypeRepository(_mockDatabase.Object);
-
-    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Create(paymentType));
-    Assert.Equal(expectedError, error.Message);
+    Assert.True(_comparer.Compare(paymentType, result).AreEqual);
     _mockDatabase.Verify(x => x.Save(paymentType), Times.Once);
   }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 
 using src.domain.payment_type.interfaces;
@@ -15,16 +16,8 @@ public class PaymentTypeRepository : IPaymentTypeRepository
     this._database = database;
   }
 
-  async public Task<Guid> Create(PaymentType paymentType)
+  public Task<PaymentType> Create(PaymentType paymentType)
   {
-    try
-    {
-      var result = await this._database.Save(paymentType);
-      return result.Id;
-    }
-    catch (Exception err)
-    {
-      throw new ResponseError(HttpStatusCode.InternalServerError, $"Error creating payment type: {err.Message}");
-    }
+    return this._database.Save(paymentType);
   }
 }
