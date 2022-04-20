@@ -10,7 +10,6 @@ public class PaymentTypeDto
   [Required] public string Name { get; set; }
   [Required] public string Description { get; set; }
   public bool Enabled { get; private set; }
-  public Dictionary<string, dynamic> ExtraInfo { get; private set; }
 
   public PaymentTypeEntity ToDomain() => new PaymentTypeEntity(
     this.Code, this.Name, this.Description

@@ -21,4 +21,12 @@ public class PaymentTypeController : ControllerBase
     var result = await _paymentTypeService.Create(dto.ToDomain());
     return Created($"/payment-type/{result}", new { id = result });
   }
+
+  [HttpGet]
+  [Route("{id}")]
+  public async Task<IActionResult> GetSimulation([FromRoute] string id)
+  {
+    var simulation = await _paymentTypeService.FindOne(Guid.Parse(id));
+    return Ok(simulation);
+  }
 }

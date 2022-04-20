@@ -7,15 +7,13 @@ public class PaymentTypeEntity
     string code,
     string name,
     string description,
-    bool enabled,
-    Dictionary<string, dynamic> extraInfo)
+    bool enabled)
   {
     Id = id;
     Code = code;
     Name = name;
     Description = description;
     Enabled = enabled;
-    ExtraInfo = extraInfo;
   }
 
   public PaymentTypeEntity(string code, string name, string description)
@@ -25,12 +23,6 @@ public class PaymentTypeEntity
     this.Name = name;
     this.Description = description;
     this.Enabled = true;
-    this.ExtraInfo = new Dictionary<string, dynamic>();
-  }
-
-  public void AddExtraInfo(string key, dynamic value)
-  {
-    this.ExtraInfo.Add(key, value);
   }
 
   public void Disable()
@@ -48,5 +40,4 @@ public class PaymentTypeEntity
   public string Name { get; private set; }
   public string Description { get; private set; }
   public bool Enabled { get; private set; }
-  public Dictionary<string, dynamic> ExtraInfo { get; private set; }
 }

@@ -15,7 +15,6 @@ public class CreateSimulationIntegrationTest
 {
   private TestClient _testClient;
   private Faker _faker;
-  //private CompareLogic _compareLogic;
 
   public CreateSimulationIntegrationTest()
   {

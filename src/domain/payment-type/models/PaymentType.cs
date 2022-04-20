@@ -1,4 +1,3 @@
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 using src.domain.payment_type.entities;
@@ -14,15 +13,14 @@ public class PaymentType
       Code = entity.Code,
       Name = entity.Name,
       Description = entity.Description,
-      Enabled = entity.Enabled,
-      ExtraInfo = entity.ExtraInfo
+      Enabled = entity.Enabled
     };
   }
 
   public PaymentTypeEntity ToEntity()
   {
     return new PaymentTypeEntity(
-      Guid.Parse(this.Id), this.Code, this.Name, this.Description, this.Enabled, this.ExtraInfo
+      Guid.Parse(this.Id), this.Code, this.Name, this.Description, this.Enabled
     );
   }
 
@@ -32,5 +30,4 @@ public class PaymentType
   public string Name { get; set; }
   public string Description { get; set; }
   public bool Enabled { get; set; }
-  public Dictionary<string, dynamic> ExtraInfo { get; set; }
 }
