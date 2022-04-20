@@ -15,12 +15,9 @@ services:
 
   mongodb:
     container_name: mongodb
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
     image: mongo:latest
     ports:
-      - 9090:9090
+      - 27017:27017
     user: root
     volumes:
       - mongodb:/var/lib/mongodb/

@@ -26,7 +26,7 @@ public class PaymentTypeRepositoryTest
   [Trait("Method", "Create")]
   public async void CreateSuccess()
   {
-    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.build();
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
 
     _mockDao.Setup(x => x.InsertOneAsync(paymentType)).ReturnsAsync(paymentType);
     IPaymentTypeRepository instance = new PaymentTypeRepository(_mockDao.Object);
