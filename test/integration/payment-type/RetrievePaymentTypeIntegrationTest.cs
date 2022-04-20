@@ -11,12 +11,12 @@ using test.builders.payment_type;
 
 namespace test.integration;
 
-public class RetrieveSimulationIntegrationTest
+public class RetrievePaymentTypeIntegrationTest
 {
   private TestClient _testClient;
   private Faker _faker;
 
-  public RetrieveSimulationIntegrationTest()
+  public RetrievePaymentTypeIntegrationTest()
   {
     _testClient = new TestClient();
     _faker = new Faker();

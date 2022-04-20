@@ -2,12 +2,7 @@ namespace src.domain.payment_type.entities;
 
 public class PaymentTypeEntity
 {
-  public PaymentTypeEntity(
-    Guid id,
-    string code,
-    string name,
-    string description,
-    bool enabled)
+  public PaymentTypeEntity(Guid id, string code, string name, string description, bool enabled = true)
   {
     Id = id;
     Code = code;

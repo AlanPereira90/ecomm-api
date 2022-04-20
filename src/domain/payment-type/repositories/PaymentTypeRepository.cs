@@ -42,4 +42,19 @@ public class PaymentTypeRepository : IPaymentTypeRepository
       throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
     }
   }
+
+  public async Task<bool> UpdateOne(PaymentTypeEntity paymentType)
+  {
+    try
+    {
+      var result = await this._dao.ReplaceOneAsync(paymentType.Id.ToString(), paymentType);
+      return result != null;
+    }
+    catch (Exception err)
+    {
+      Console.WriteLine($"Fail to update payment type: {err.Message}");
+
+      throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
+    }
+  }
 }

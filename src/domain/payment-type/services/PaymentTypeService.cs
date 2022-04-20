@@ -36,4 +36,16 @@ public class PaymentTypeService : IPaymentTypeService
   {
     return await GetPaymentType(id);
   }
+
+  public async Task<Guid> UpdateOne(PaymentTypeEntity paymentType)
+  {
+    var result = await _paymentTypeRepository.UpdateOne(paymentType);
+
+    if (!result)
+    {
+      throw new ResponseError(HttpStatusCode.NotFound, "Payment type not found");
+    }
+
+    return paymentType.Id;
+  }
 }

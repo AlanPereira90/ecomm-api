@@ -14,4 +14,8 @@ public class PaymentTypeDto
   public PaymentTypeEntity ToDomain() => new PaymentTypeEntity(
     this.Code, this.Name, this.Description
   );
+
+  public PaymentTypeEntity ToDomain(Guid id) => new PaymentTypeEntity(
+    id, this.Code, this.Name, this.Description
+  );
 }

@@ -70,6 +70,15 @@ public class TestClient
     return await _client.PostAsync(route, this.PreparePayload(headers, payload));
   }
 
+  public async Task<HttpResponseMessage> Put(
+    string route,
+    Dictionary<string, string>? headers = null,
+    object? payload = null
+  )
+  {
+    return await _client.PutAsync(route, this.PreparePayload(headers, payload));
+  }
+
   public async Task<HttpResponseMessage> Patch(
     string route,
     Dictionary<string, string>? headers = null,

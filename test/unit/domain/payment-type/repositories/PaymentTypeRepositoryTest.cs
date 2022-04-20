@@ -98,4 +98,48 @@ public class PaymentTypeRepositoryTest
     Assert.Equal(errorMessage, error.Message);
     _mockDao.Verify(x => x.FindAsync(paymentType.Id.ToString()), Times.Once);
   }
+
+  [Fact(DisplayName = "should update a payment type successfully")]
+  [Trait("Method", "UpdateOne")]
+  public async void UpdateOneSuccess()
+  {
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
+
+    _mockDao.Setup(x => x.ReplaceOneAsync(paymentType.Id.ToString(), paymentType)).ReturnsAsync(paymentType);
+    IPaymentTypeRepository instance = new PaymentTypeRepository(_mockDao.Object);
+
+    var result = await instance.UpdateOne(paymentType);
+
+    Assert.True(result);
+    _mockDao.Verify(x => x.ReplaceOneAsync(paymentType.Id.ToString(), paymentType), Times.Once);
+  }
+
+  [Fact(DisplayName = "should return false when payment type is not found")]
+  [Trait("Method", "UpdateOne")]
+  public async void UpdateOneEmpty()
+  {
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
+
+    IPaymentTypeRepository instance = new PaymentTypeRepository(_mockDao.Object);
+
+    var result = await instance.UpdateOne(paymentType);
+
+    Assert.False(result);
+    _mockDao.Verify(x => x.ReplaceOneAsync(paymentType.Id.ToString(), paymentType), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when dao fails")]
+  [Trait("Method", "UpdateOne")]
+  public async void UpdateOneFail()
+  {
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
+    string errorMessage = _faker.Lorem.Sentence();
+
+    _mockDao.Setup(x => x.ReplaceOneAsync(paymentType.Id.ToString(), paymentType)).Throws(new Exception(errorMessage));
+    IPaymentTypeRepository instance = new PaymentTypeRepository(_mockDao.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.UpdateOne(paymentType));
+    Assert.Equal(errorMessage, error.Message);
+    _mockDao.Verify(x => x.ReplaceOneAsync(paymentType.Id.ToString(), paymentType), Times.Once);
+  }
 }

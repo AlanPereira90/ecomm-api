@@ -6,4 +6,5 @@ public interface IPaymentTypeService
 {
   Task<Guid> Create(PaymentTypeEntity paymentType);
   Task<PaymentTypeEntity> FindOne(Guid id);
+  Task<Guid> UpdateOne(PaymentTypeEntity paymentType);
 }

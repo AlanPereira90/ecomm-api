@@ -35,4 +35,11 @@ public class PaymentTypeDao : IPaymentTypeDao
     var paymentType = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
     return paymentType.ToEntity();
   }
+
+  public async Task<PaymentTypeEntity> ReplaceOneAsync(string id, PaymentTypeEntity entity)
+  {
+    var updated = await _collection.ReplaceOneAsync(x => x.Id == id, PaymentType.FromEntity(entity));
+
+    return updated.ModifiedCount > 0 ? entity : null;
+  }
 }

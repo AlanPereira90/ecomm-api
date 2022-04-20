@@ -6,4 +6,5 @@ public interface IPaymentTypeRepository
 {
   Task<PaymentTypeEntity> Create(PaymentTypeEntity paymentType);
   Task<PaymentTypeEntity> FindOne(Guid id);
+  Task<bool> UpdateOne(PaymentTypeEntity paymentType);
 }
