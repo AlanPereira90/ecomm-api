@@ -2,6 +2,22 @@ namespace src.domain.payment_type.entities;
 
 public class PaymentTypeEntity
 {
+  public PaymentTypeEntity(
+    Guid id,
+    string code,
+    string name,
+    string description,
+    bool enabled,
+    Dictionary<string, dynamic> extraInfo)
+  {
+    Id = id;
+    Code = code;
+    Name = name;
+    Description = description;
+    Enabled = enabled;
+    ExtraInfo = extraInfo;
+  }
+
   public PaymentTypeEntity(string code, string name, string description)
   {
     this.Id = Guid.NewGuid();

@@ -19,6 +19,13 @@ public class PaymentType
     };
   }
 
+  public PaymentTypeEntity ToEntity()
+  {
+    return new PaymentTypeEntity(
+      Guid.Parse(this.Id), this.Code, this.Name, this.Description, this.Enabled, this.ExtraInfo
+    );
+  }
+
   [BsonId]
   public string Id { get; set; }
   public string Code { get; set; }

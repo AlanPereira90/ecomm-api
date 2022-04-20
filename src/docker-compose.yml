@@ -12,6 +12,8 @@ services:
       - mongodb
     networks:
       - np-network
+    volumes:
+      - ./src:/src
 
   mongodb:
     container_name: mongodb

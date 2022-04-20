@@ -1,3 +1,6 @@
+up:
+	cd src && docker-compose up && cd ..
+
 tdd:
 	cd test && dotnet watch test --logger "console;verbosity=detailed" && cd ..
 

@@ -17,6 +17,29 @@ public class PaymentTypeRepository : IPaymentTypeRepository
 
   public Task<PaymentTypeEntity> Create(PaymentTypeEntity paymentType)
   {
-    return this._dao.InsertOneAsync(paymentType);
+    try
+    {
+      return this._dao.InsertOneAsync(paymentType);
+    }
+    catch (Exception err)
+    {
+      Console.WriteLine($"Fail to create payment type: {err.Message}");
+
+      throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
+    }
+  }
+
+  public Task<PaymentTypeEntity> FindOne(Guid id)
+  {
+    try
+    {
+      return this._dao.FindAsync(id.ToString());
+    }
+    catch (Exception err)
+    {
+      Console.WriteLine($"Fail to find payment type: {err.Message}");
+
+      throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
+    }
   }
 }

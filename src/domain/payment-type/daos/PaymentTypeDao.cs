@@ -29,4 +29,10 @@ public class PaymentTypeDao : IPaymentTypeDao
     await _collection.InsertOneAsync(PaymentType.FromEntity(entity));
     return entity;
   }
+
+  public async Task<PaymentTypeEntity> FindAsync(string id)
+  {
+    var paymentType = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    return paymentType.ToEntity();
+  }
 }
