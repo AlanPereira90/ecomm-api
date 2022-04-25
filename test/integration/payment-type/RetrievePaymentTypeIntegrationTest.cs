@@ -29,7 +29,7 @@ public class RetrievePaymentTypeIntegrationTest
 
     _testClient.PaymentTypeDao.Setup(x => x.FindAsync(
       paymentType.Id.ToString()
-    )).Returns(Task.FromResult(paymentType));
+    )).ReturnsAsync(paymentType);
 
     var response = await _testClient.Get($"/payment-type/{paymentType.Id}");
 

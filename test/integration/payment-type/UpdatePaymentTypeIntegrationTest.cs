@@ -1,10 +1,9 @@
+using System;
+using System.Net;
+
 using Xunit;
 using Moq;
 using Bogus;
-
-using System;
-using System.Net;
-using System.Threading.Tasks;
 
 using src.domain.payment_type.entities;
 using test.builders.payment_type;
@@ -28,20 +27,53 @@ public class UpdatePaymentTypeIntegrationTest
     PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
     var body = new
     {
-      code = paymentType.Code,
       name = paymentType.Name,
-      description = paymentType.Description
     };
 
     var expectedLocation = $"/payment-type/{paymentType.Id}";
 
+    _testClient.PaymentTypeDao.Setup(x => x.FindAsync(
+      paymentType.Id.ToString()
+    )).ReturnsAsync(paymentType);
     _testClient.PaymentTypeDao.Setup(x => x.ReplaceOneAsync(
       paymentType.Id.ToString(), It.IsAny<PaymentTypeEntity>()
-    )).Returns(Task.FromResult(paymentType));
+    )).ReturnsAsync(paymentType);
 
     var response = await _testClient.Put($"/payment-type/{paymentType.Id}", null, body);
 
     Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
     Assert.Equal(expectedLocation, response.Headers.Location!.ToString());
+  }
+
+  [Fact(DisplayName = "should return 404 NOT_FOUND when payment type is not found")]
+  public async void UpdatePaymentTypeNotFound()
+  {
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
+    var body = new
+    {
+      code = paymentType.Code,
+    };
+
+    var response = await _testClient.Put($"/payment-type/{paymentType.Id}", null, body);
+
+    Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+  }
+
+  [Fact(DisplayName = "should return 500 INTERNAL_SERVER_ERROR when database is down")]
+  public async void UpdatePaymentTypeServerError()
+  {
+    PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
+    var body = new
+    {
+      code = paymentType.Code,
+    };
+
+    _testClient.PaymentTypeDao.Setup(x => x.FindAsync(
+      paymentType.Id.ToString()
+    )).ThrowsAsync(new Exception());
+
+    var response = await _testClient.Put($"/payment-type/{paymentType.Id}", null, body);
+
+    Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
   }
 }

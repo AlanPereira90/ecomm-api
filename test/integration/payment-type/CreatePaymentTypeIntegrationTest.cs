@@ -37,7 +37,7 @@ public class CreatePaymentTypeIntegrationTest
 
     _testClient.PaymentTypeDao.Setup(x => x.InsertOneAsync(
       It.IsAny<PaymentTypeEntity>()
-    )).Returns(Task.FromResult(paymentType));
+    )).ReturnsAsync(paymentType);
 
     var response = await _testClient.Post("/payment-type", null, body);
 

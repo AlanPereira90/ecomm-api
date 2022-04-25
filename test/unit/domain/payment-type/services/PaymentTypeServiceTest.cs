@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using Xunit;
 using Moq;
 using KellermanSoftware.CompareNetObjects;
@@ -73,13 +71,15 @@ public class PaymentTypeServiceTest
   {
     PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
 
-    _mockRepository.Setup(x => x.UpdateOne(paymentType)).Returns(Task.FromResult(true));
+    _mockRepository.Setup(x => x.FindOne(paymentType.Id)).ReturnsAsync(paymentType);
+    _mockRepository.Setup(x => x.UpdateOne(It.IsAny<PaymentTypeEntity>())).ReturnsAsync(true);
     IPaymentTypeService instance = new PaymentTypeService(_mockRepository.Object);
 
     var result = await instance.UpdateOne(paymentType);
 
     Assert.Equal(paymentType.Id, result);
-    _mockRepository.Verify(x => x.UpdateOne(paymentType), Times.Once);
+    _mockRepository.Verify(x => x.FindOne(paymentType.Id), Times.Once);
+    _mockRepository.Verify(x => x.UpdateOne(It.IsAny<PaymentTypeEntity>()), Times.Once);
   }
 
   [Fact(DisplayName = "should fail when payment type is not found")]
@@ -88,12 +88,12 @@ public class PaymentTypeServiceTest
   {
     PaymentTypeEntity paymentType = PaymentTypeEntityBuilder.Build();
 
-    _mockRepository.Setup(x => x.UpdateOne(paymentType)).Returns(Task.FromResult(false));
     IPaymentTypeService instance = new PaymentTypeService(_mockRepository.Object);
 
     var error = await Assert.ThrowsAsync<ResponseError>(() => instance.UpdateOne(paymentType));
 
     Assert.Equal("Payment type not found", error.Message);
-    _mockRepository.Verify(x => x.UpdateOne(paymentType), Times.Once);
+    _mockRepository.Verify(x => x.FindOne(paymentType.Id), Times.Once);
+    _mockRepository.Verify(x => x.UpdateOne(paymentType), Times.Never);
   }
 }
