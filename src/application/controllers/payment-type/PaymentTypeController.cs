@@ -32,10 +32,8 @@ public class PaymentTypeController : ControllerBase
 
   [HttpPut]
   [Route("{id}")]
-  public async Task<IActionResult> UpdatePaymentType([FromRoute] string id, [FromBody] PaymentTypeDto dto)
+  public async Task<IActionResult> UpdatePaymentType([FromRoute] string id, [FromBody] UpdatePaymentTypeDto dto)
   {
-    //TODO: CREATE A NEW DTO WITHOUT REQUIRED FIELDS, AND THE SERVICE LAYER
-    //SHOUD HANDLE WITH THE FIEDS ATTRIBUTION
     var result = await _paymentTypeService.UpdateOne(dto.ToDomain(Guid.Parse(id)));
     return Accepted($"/payment-type/{result}", new { id = result });
   }
