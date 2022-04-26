@@ -75,4 +75,18 @@ public class OrderService : IOrderService
     var result = await _orderRepository.UpdateOne(order);
     return result;
   }
+
+  public async Task<bool> Confirm(Guid id, string userId)
+  {
+    var order = await this.GetOrder(id, userId);
+
+    if (order.Status != OrderStatus.CREATED)
+    {
+      throw new ResponseError(HttpStatusCode.UnprocessableEntity, $"Invalid status to confirm: {order.Status}");
+    }
+    order.Confirm();
+
+    var result = await _orderRepository.UpdateOne(order);
+    return result;
+  }
 }

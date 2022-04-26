@@ -37,7 +37,7 @@ public class OrderController : ControllerBase
     return Ok(result);
   }
 
-  [HttpPost]
+  [HttpPatch]
   [Route("{id}/cancel")]
   public async Task<IActionResult> CancelOrder(
     [FromRoute] string id,
@@ -45,6 +45,17 @@ public class OrderController : ControllerBase
   )
   {
     var result = await _orderService.Cancel(Guid.Parse(id), userId);
+    return Accepted($"/order/{id}");
+  }
+
+  [HttpPatch]
+  [Route("{id}/confirm")]
+  public async Task<IActionResult> ConfirmOrder(
+    [FromRoute] string id,
+    [FromHeader(Name = "user-id")][Required] string userId
+  )
+  {
+    var result = await _orderService.Confirm(Guid.Parse(id), userId);
     return Accepted($"/order/{id}");
   }
 }
