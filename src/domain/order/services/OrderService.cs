@@ -33,7 +33,6 @@ public class OrderService : IOrderService
 
   public async Task<Guid> Create(OrderEntity order)
   {
-    //TODO: create order, validate payment type (should exist and should be enabled)
     await ValidatePaymentType(order.PaymentTypeId);
 
     var result = await _orderRepository.Create(order);

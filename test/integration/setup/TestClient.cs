@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using src.domain.payment_type.interfaces;
+using src.domain.order.interfaces;
 
 namespace test.integration;
 
@@ -19,6 +20,7 @@ public class TestClient
 
   private HttpClient _client;
   private Mock<IPaymentTypeDao> _mockPaymentTypeDao = new Mock<IPaymentTypeDao>();
+  private Mock<IOrderDao> _mockOrderDao = new Mock<IOrderDao>();
 
   public TestClient()
   {
@@ -29,6 +31,7 @@ public class TestClient
           builder.ConfigureTestServices(services =>
           {
             services.AddScoped<IPaymentTypeDao>(x => _mockPaymentTypeDao.Object);
+            services.AddScoped<IOrderDao>(x => _mockOrderDao.Object);
           });
         });
 
@@ -39,6 +42,11 @@ public class TestClient
   public Mock<IPaymentTypeDao> PaymentTypeDao
   {
     get { return _mockPaymentTypeDao; }
+  }
+
+  public Mock<IOrderDao> OrderDao
+  {
+    get { return _mockOrderDao; }
   }
 
   private ByteArrayContent? PreparePayload(Dictionary<string, string>? headers, object? payload)

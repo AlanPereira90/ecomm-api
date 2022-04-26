@@ -10,9 +10,9 @@ public static class OrderEntityBuilder
   private static Faker faker = new Faker();
   public static OrderEntity Build() => new OrderEntity(
     id: faker.Random.Guid(),
-    userId: faker.Random.String(),
+    userId: faker.Random.AlphaNumeric(10),
     paymentTypeId: faker.Random.Guid(),
-    code: faker.Random.String(),
+    code: faker.Random.AlphaNumeric(10),
     status: OrderStatus.CREATED,
     delivery: new
     {

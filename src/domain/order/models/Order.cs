@@ -34,7 +34,6 @@ public class Order
 
   [BsonId]
   public string Id { get; private set; }
-  [BsonId]
   public string UserId { get; private set; }
   public string PaymentTypeId { get; private set; }
   public string Code { get; private set; }

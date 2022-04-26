@@ -3,6 +3,10 @@ using src.domain.payment_type.repositories;
 using src.domain.payment_type.services;
 using src.domain.payment_type.daos;
 using src.domain.infra;
+using src.domain.order.interfaces;
+using src.domain.order.repositories;
+using src.domain.order.services;
+using src.domain.order.daos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,10 @@ builder.Services.Configure<MongoDbConnection>(
 builder.Services.AddScoped<IPaymentTypeDao, PaymentTypeDao>();
 builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
+
+builder.Services.AddScoped<IOrderDao, OrderDao>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 

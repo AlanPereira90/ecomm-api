@@ -5,7 +5,6 @@ using src.domain.order.interfaces;
 using src.domain.order.entities;
 using src.domain.order.services;
 using src.domain.payment_type.interfaces;
-using src.domain.payment_type.repositories;
 using src.domain.payment_type.entities;
 
 using test.builders.order;
