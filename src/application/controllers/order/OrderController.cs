@@ -25,4 +25,15 @@ public class OrderController : ControllerBase
     var result = await _orderService.Create(dto.ToDomain(userId));
     return Created($"/order/{result}", new { id = result });
   }
+
+  [HttpGet]
+  [Route("{id}")]
+  public async Task<IActionResult> GetOrder(
+    [FromRoute] string id,
+    [FromHeader(Name = "user-id")][Required] string userId
+  )
+  {
+    var result = await _orderService.FindOne(Guid.Parse(id), userId);
+    return Ok(result);
+  }
 }

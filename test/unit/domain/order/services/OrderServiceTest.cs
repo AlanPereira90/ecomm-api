@@ -1,5 +1,6 @@
 using Xunit;
 using Moq;
+using Bogus;
 
 using src.domain.order.interfaces;
 using src.domain.order.entities;
@@ -16,11 +17,13 @@ public class OrderServiceTest
 {
   private readonly Mock<IOrderRepository> _mockOrderRepository;
   private readonly Mock<IPaymentTypeRepository> _mockPaymentTypeRepository;
+  private readonly Faker _faker;
 
   public OrderServiceTest()
   {
     _mockOrderRepository = new Mock<IOrderRepository>();
     _mockPaymentTypeRepository = new Mock<IPaymentTypeRepository>();
+    _faker = new Faker();
   }
 
   [Fact(DisplayName = "should create an order successfully")]
@@ -82,7 +85,7 @@ public class OrderServiceTest
     _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
     IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
 
-    var result = await instance.FindOne(order.Id);
+    var result = await instance.FindOne(order.Id, order.UserId);
 
     Assert.Equal(order, result);
     _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
@@ -96,8 +99,22 @@ public class OrderServiceTest
 
     IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
 
-    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.FindOne(order.Id));
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.FindOne(order.Id, order.UserId));
     Assert.Equal("Order not found", error.Message);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when order does not belong to user")]
+  [Trait("Method", "FindOne")]
+  public async void FindOneNotBelongToUser()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.FindOne(order.Id, _faker.Random.AlphaNumeric(10)));
+    Assert.Equal("Order does not belong to user", error.Message);
     _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
   }
 }

@@ -31,13 +31,18 @@ public class OrderService : IOrderService
     return true;
   }
 
-  private async Task<OrderEntity> GetOrder(Guid id)
+  private async Task<OrderEntity> GetOrder(Guid id, string userId)
   {
     var result = await _orderRepository.FindOne(id);
 
     if (result == null)
     {
       throw new ResponseError(HttpStatusCode.NotFound, "Order not found");
+    }
+
+    if (result.UserId != userId)
+    {
+      throw new ResponseError(HttpStatusCode.Forbidden, "Order does not belong to user");
     }
 
     return result;
@@ -51,8 +56,8 @@ public class OrderService : IOrderService
     return result.Id;
   }
 
-  public async Task<OrderEntity> FindOne(Guid id)
+  public async Task<OrderEntity> FindOne(Guid id, string userId)
   {
-    return await GetOrder(id);
+    return await this.GetOrder(id, userId);
   }
 }
