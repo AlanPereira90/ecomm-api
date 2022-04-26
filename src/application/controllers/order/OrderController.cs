@@ -58,4 +58,15 @@ public class OrderController : ControllerBase
     var result = await _orderService.Confirm(Guid.Parse(id), userId);
     return Accepted($"/order/{id}");
   }
+
+  [HttpPatch]
+  [Route("{id}/finish")]
+  public async Task<IActionResult> FinishOrder(
+    [FromRoute] string id,
+    [FromHeader(Name = "user-id")][Required] string userId
+  )
+  {
+    var result = await _orderService.Finish(Guid.Parse(id), userId);
+    return Accepted($"/order/{id}");
+  }
 }

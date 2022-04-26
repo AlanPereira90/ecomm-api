@@ -89,4 +89,18 @@ public class OrderService : IOrderService
     var result = await _orderRepository.UpdateOne(order);
     return result;
   }
+
+  public async Task<bool> Finish(Guid id, string userId)
+  {
+    var order = await this.GetOrder(id, userId);
+
+    if (order.Status != OrderStatus.PAID)
+    {
+      throw new ResponseError(HttpStatusCode.UnprocessableEntity, $"Invalid status to finish: {order.Status}");
+    }
+    order.Finish();
+
+    var result = await _orderRepository.UpdateOne(order);
+    return result;
+  }
 }

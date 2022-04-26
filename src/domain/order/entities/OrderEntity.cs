@@ -36,6 +36,11 @@ public class OrderEntity
     this.Status = OrderStatus.PAID;
   }
 
+  public void Finish()
+  {
+    this.Status = OrderStatus.FINISHED;
+  }
+
   public Guid Id { get; private set; }
   public string UserId { get; private set; }
   public Guid PaymentTypeId { get; private set; }

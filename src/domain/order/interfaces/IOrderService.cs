@@ -8,4 +8,5 @@ public interface IOrderService
   Task<OrderEntity> FindOne(Guid id, string userId);
   Task<bool> Cancel(Guid id, string userId);
   Task<bool> Confirm(Guid id, string userId);
+  Task<bool> Finish(Guid id, string userId);
 }
