@@ -14,11 +14,11 @@ public class OrderRepository : IOrderRepository
     this._dao = dao;
   }
 
-  public Task<OrderEntity> Create(OrderEntity order)
+  public async Task<OrderEntity> Create(OrderEntity order)
   {
     try
     {
-      return this._dao.InsertOneAsync(order);
+      return await this._dao.InsertOneAsync(order);
     }
     catch (Exception err)
     {
@@ -26,5 +26,18 @@ public class OrderRepository : IOrderRepository
       throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
     }
 
+  }
+
+  public async Task<OrderEntity> FindOne(Guid id)
+  {
+    try
+    {
+      return await this._dao.FindAsync(id.ToString());
+    }
+    catch (Exception err)
+    {
+      Console.WriteLine($"Fail to find order: {err.Message}");
+      throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
+    }
   }
 }

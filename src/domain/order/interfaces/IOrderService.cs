@@ -5,4 +5,5 @@ namespace src.domain.order.interfaces;
 public interface IOrderService
 {
   Task<Guid> Create(OrderEntity order);
+  Task<OrderEntity> FindOne(Guid id);
 }

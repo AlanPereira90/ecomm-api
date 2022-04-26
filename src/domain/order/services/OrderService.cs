@@ -31,11 +31,28 @@ public class OrderService : IOrderService
     return true;
   }
 
+  private async Task<OrderEntity> GetOrder(Guid id)
+  {
+    var result = await _orderRepository.FindOne(id);
+
+    if (result == null)
+    {
+      throw new ResponseError(HttpStatusCode.NotFound, "Order not found");
+    }
+
+    return result;
+  }
+
   public async Task<Guid> Create(OrderEntity order)
   {
     await ValidatePaymentType(order.PaymentTypeId);
 
     var result = await _orderRepository.Create(order);
     return result.Id;
+  }
+
+  public async Task<OrderEntity> FindOne(Guid id)
+  {
+    return await GetOrder(id);
   }
 }

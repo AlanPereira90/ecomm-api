@@ -72,4 +72,32 @@ public class OrderServiceTest
     _mockPaymentTypeRepository.Verify(x => x.FindOne(order.PaymentTypeId), Times.Once);
     _mockOrderRepository.Verify(x => x.Create(order), Times.Never);
   }
+
+  [Fact(DisplayName = "should retrieve an order successfully")]
+  [Trait("Method", "FindOne")]
+  public async void FindOneSuccess()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var result = await instance.FindOne(order.Id);
+
+    Assert.Equal(order, result);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when order is not found")]
+  [Trait("Method", "FindOne")]
+  public async void FindOneNotFound()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.FindOne(order.Id));
+    Assert.Equal("Order not found", error.Message);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+  }
 }

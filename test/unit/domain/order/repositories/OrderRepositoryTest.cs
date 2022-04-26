@@ -46,11 +46,54 @@ public class OrderRepositoryTest
     OrderEntity entity = OrderEntityBuilder.Build();
     string errorMessage = _faker.Lorem.Sentence();
 
-    _mockDao.Setup(x => x.InsertOneAsync(entity)).Throws(new Exception(errorMessage));
+    _mockDao.Setup(x => x.InsertOneAsync(entity)).ThrowsAsync(new Exception(errorMessage));
     IOrderRepository instance = new OrderRepository(_mockDao.Object);
 
     var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Create(entity));
     Assert.Equal(errorMessage, error.Message);
     _mockDao.Verify(x => x.InsertOneAsync(entity), Times.Once);
+  }
+
+  [Fact(DisplayName = "should find an order successfully")]
+  [Trait("Method", "FindOne")]
+  public async void FindOrderSuccess()
+  {
+    OrderEntity entity = OrderEntityBuilder.Build();
+
+    _mockDao.Setup(x => x.FindAsync(entity.Id.ToString())).ReturnsAsync(entity);
+    IOrderRepository instance = new OrderRepository(_mockDao.Object);
+
+    var result = await instance.FindOne(entity.Id);
+
+    Assert.True(_comparer.Compare(entity, result).AreEqual);
+    _mockDao.Verify(x => x.FindAsync(entity.Id.ToString()), Times.Once);
+  }
+
+  [Fact(DisplayName = "should return empty")]
+  [Trait("Method", "FindOne")]
+  public async void FindOrderEmpty()
+  {
+    OrderEntity entity = OrderEntityBuilder.Build();
+    IOrderRepository instance = new OrderRepository(_mockDao.Object);
+
+    var result = await instance.FindOne(entity.Id);
+
+    Assert.Null(result);
+    _mockDao.Verify(x => x.FindAsync(entity.Id.ToString()), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when dao fails")]
+  [Trait("Method", "FindOne")]
+  public async void FindOrderFail()
+  {
+    OrderEntity entity = OrderEntityBuilder.Build();
+    string errorMessage = _faker.Lorem.Sentence();
+
+    _mockDao.Setup(x => x.FindAsync(entity.Id.ToString())).ThrowsAsync(new Exception(errorMessage));
+    IOrderRepository instance = new OrderRepository(_mockDao.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.FindOne(entity.Id));
+    Assert.Equal(errorMessage, error.Message);
+    _mockDao.Verify(x => x.FindAsync(entity.Id.ToString()), Times.Once);
   }
 }
