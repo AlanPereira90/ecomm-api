@@ -96,4 +96,35 @@ public class OrderRepositoryTest
     Assert.Equal(errorMessage, error.Message);
     _mockDao.Verify(x => x.FindAsync(entity.Id.ToString()), Times.Once);
   }
+
+  [Fact(DisplayName = "should update an order successfully")]
+  [Trait("Method", "UpdateOne")]
+  public async void UpdateOrderSuccess()
+  {
+    OrderEntity entity = OrderEntityBuilder.Build();
+
+    _mockDao.Setup(x => x.ReplaceOneAsync(entity.Id.ToString(), entity)).ReturnsAsync(entity);
+    IOrderRepository instance = new OrderRepository(_mockDao.Object);
+
+    var result = await instance.UpdateOne(entity);
+
+    Assert.True(result);
+    _mockDao.Verify(x => x.ReplaceOneAsync(entity.Id.ToString(), entity), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when dao fails")]
+  [Trait("Method", "UpdateOne")]
+  public async void UpdateOrderFail()
+  {
+    OrderEntity entity = OrderEntityBuilder.Build();
+    string errorMessage = _faker.Lorem.Sentence();
+
+    _mockDao.Setup(x => x.ReplaceOneAsync(entity.Id.ToString(), entity))
+      .ThrowsAsync(new Exception(errorMessage));
+    IOrderRepository instance = new OrderRepository(_mockDao.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.UpdateOne(entity));
+    Assert.Equal(errorMessage, error.Message);
+    _mockDao.Verify(x => x.ReplaceOneAsync(entity.Id.ToString(), entity), Times.Once);
+  }
 }

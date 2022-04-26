@@ -6,5 +6,5 @@ public interface IOrderRepository
 {
   Task<OrderEntity> Create(OrderEntity order);
   Task<OrderEntity> FindOne(Guid id);
-  //Task<bool> UpdateOne(OrderEntity order);
+  Task<bool> UpdateOne(OrderEntity order);
 }

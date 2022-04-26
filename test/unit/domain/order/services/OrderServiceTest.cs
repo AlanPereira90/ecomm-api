@@ -117,4 +117,66 @@ public class OrderServiceTest
     Assert.Equal("Order does not belong to user", error.Message);
     _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
   }
+
+  [Fact(DisplayName = "should cancel an order successfully")]
+  [Trait("Method", "Cancel")]
+  public async void CancelSuccess()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
+    _mockOrderRepository.Setup(x => x.UpdateOne(order)).ReturnsAsync(true);
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var result = await instance.Cancel(order.Id, order.UserId);
+
+    Assert.True(result);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+    _mockOrderRepository.Verify(x => x.UpdateOne(order), Times.Once);
+  }
+
+  [Fact(DisplayName = "should fail when order is not found")]
+  [Trait("Method", "Cancel")]
+  public async void CancelNotFound()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Cancel(order.Id, order.UserId));
+    Assert.Equal("Order not found", error.Message);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+    _mockOrderRepository.Verify(x => x.UpdateOne(order), Times.Never);
+  }
+
+  [Fact(DisplayName = "should fail when order does not belong to user")]
+  [Trait("Method", "Cancel")]
+  public async void CancelNotBelongToUser()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+
+    _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Cancel(order.Id, _faker.Random.AlphaNumeric(10)));
+    Assert.Equal("Order does not belong to user", error.Message);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+    _mockOrderRepository.Verify(x => x.UpdateOne(order), Times.Never);
+  }
+
+  [Fact(DisplayName = "should fail when order status is not CREATED")]
+  [Trait("Method", "Cancel")]
+  public async void CancelInvalidStatus()
+  {
+    OrderEntity order = OrderEntityBuilder.Build();
+    order.Cancel();
+
+    _mockOrderRepository.Setup(x => x.FindOne(order.Id)).ReturnsAsync(order);
+    IOrderService instance = new OrderService(_mockOrderRepository.Object, _mockPaymentTypeRepository.Object);
+
+    var error = await Assert.ThrowsAsync<ResponseError>(() => instance.Cancel(order.Id, order.UserId));
+    Assert.Equal("Invalid status to cancel: CANCELLED", error.Message);
+    _mockOrderRepository.Verify(x => x.FindOne(order.Id), Times.Once);
+    _mockOrderRepository.Verify(x => x.UpdateOne(order), Times.Never);
+  }
 }

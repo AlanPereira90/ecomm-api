@@ -2,6 +2,7 @@ using System.Net;
 
 using src.domain.order.entities;
 using src.domain.order.interfaces;
+using src.domain.order.enums;
 using src.domain.payment_type.interfaces;
 
 namespace src.domain.order.services;
@@ -59,5 +60,19 @@ public class OrderService : IOrderService
   public async Task<OrderEntity> FindOne(Guid id, string userId)
   {
     return await this.GetOrder(id, userId);
+  }
+
+  public async Task<bool> Cancel(Guid id, string userId)
+  {
+    var order = await this.GetOrder(id, userId);
+
+    if (order.Status != OrderStatus.CREATED)
+    {
+      throw new ResponseError(HttpStatusCode.UnprocessableEntity, $"Invalid status to cancel: {order.Status}");
+    }
+    order.Cancel();
+
+    var result = await _orderRepository.UpdateOne(order);
+    return result;
   }
 }

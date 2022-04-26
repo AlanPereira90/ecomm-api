@@ -26,6 +26,11 @@ public class OrderEntity
     this.Items = items;
   }
 
+  public void Cancel()
+  {
+    this.Status = OrderStatus.CANCELLED;
+  }
+
   public Guid Id { get; private set; }
   public string UserId { get; private set; }
   public Guid PaymentTypeId { get; private set; }

@@ -40,4 +40,18 @@ public class OrderRepository : IOrderRepository
       throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
     }
   }
+
+  public async Task<bool> UpdateOne(OrderEntity order)
+  {
+    try
+    {
+      var result = await this._dao.ReplaceOneAsync(order.Id.ToString(), order);
+      return result != null;
+    }
+    catch (Exception err)
+    {
+      Console.WriteLine($"Fail to update order: {err.Message}");
+      throw new ResponseError(HttpStatusCode.InternalServerError, err.Message);
+    }
+  }
 }
