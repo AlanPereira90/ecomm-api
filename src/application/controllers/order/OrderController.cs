@@ -36,4 +36,15 @@ public class OrderController : ControllerBase
     var result = await _orderService.FindOne(Guid.Parse(id), userId);
     return Ok(result);
   }
+
+  [HttpPost]
+  [Route("{id}/cancel")]
+  public async Task<IActionResult> CancelOrder(
+    [FromRoute] string id,
+    [FromHeader(Name = "user-id")][Required] string userId
+  )
+  {
+    var result = await _orderService.Cancel(Guid.Parse(id), userId);
+    return Accepted($"/order/{id}");
+  }
 }
