@@ -1,3 +1,5 @@
+using System.Net;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -9,16 +11,20 @@ public class ResponseExceptionFilter : IActionFilter, IOrderedFilter
 
   public void OnActionExecuted(ActionExecutedContext context)
   {
-    if (context.Exception is ResponseError error)
+    if (context.Exception != null)
     {
+      var error = context.Exception;
+
       var errorBody = new
       {
-        message = error.Message,
+        message = context.Exception.Message,
       };
 
-      context.Result = new ObjectResult(error.Value ?? errorBody)
+      var value = error is ResponseError ? ((ResponseError)error).Value : errorBody;
+
+      context.Result = new ObjectResult(errorBody)
       {
-        StatusCode = error.StatusCode
+        StatusCode = error is ResponseError ? ((ResponseError)error).StatusCode : (int)HttpStatusCode.InternalServerError,
       };
 
       context.ExceptionHandled = true;

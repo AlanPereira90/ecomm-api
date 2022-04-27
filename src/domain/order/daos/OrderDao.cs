@@ -1,3 +1,5 @@
+using System;
+
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 
@@ -33,7 +35,7 @@ public class OrderDao : IOrderDao
   public async Task<OrderEntity> FindAsync(string id)
   {
     var Order = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-    return Order.ToEntity();
+    return Order != null ? Order.ToEntity() : null;
   }
 
   public async Task<OrderEntity> ReplaceOneAsync(string id, OrderEntity entity)

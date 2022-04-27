@@ -34,7 +34,7 @@ public class OrderController : ControllerBase
   )
   {
     var result = await _orderService.FindOne(Guid.Parse(id), userId);
-    return Ok(result);
+    return Ok(OrderDto.FromDomain(result));
   }
 
   [HttpPatch]
